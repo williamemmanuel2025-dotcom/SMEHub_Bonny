@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Users, FileText, CheckCircle, XCircle, BarChart3, 
   Search, MoreVertical, ShieldCheck, Download, Trash2, 
-  Shield, PauseCircle, Star
+  Shield, PauseCircle, Star, ArrowLeft
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { Business } from '../data/mockData';
 import ActionMenu from '../components/Admin/ActionMenu';
 import ConfirmDialog from '../components/Admin/ConfirmDialog';
+import EditBusinessModal from '../components/Admin/EditBusinessModal';
 
 type AdminRole = 'superadmin' | 'admin' | 'moderator';
 
@@ -26,6 +28,8 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<AdminRole>('admin');
+  
+  const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
 
   // Bulk Selection
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -130,8 +134,14 @@ export default function AdminDashboard() {
 
   const handleAction = (action: string, business: Business) => {
     switch (action) {
-      case 'view':
       case 'edit':
+        if (role === 'superadmin') {
+          setEditingBusiness(business);
+        } else {
+          alert('Only Super Admin can edit business listings.');
+        }
+        break;
+      case 'view':
       case 'analytics':
       case 'contact':
       case 'reviews':
@@ -249,9 +259,13 @@ export default function AdminDashboard() {
               className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl mb-4 focus:ring-2 focus:ring-primary-500 outline-none"
             />
           </div>
-          <button type="submit" className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all">
+          <button type="submit" className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all mb-4">
             Login
           </button>
+          
+          <Link to="/" className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+            <ArrowLeft size={18} /> Back 
+          </Link>
         </form>
       </div>
     );
@@ -287,7 +301,12 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         <div className="p-6 md:p-10">
-          <h1 className="text-2xl font-bold text-slate-900 mb-8">Dashboard Overview</h1>
+          <div className="flex items-center gap-4 mb-8">
+            <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors text-sm">
+              <ArrowLeft size={18} /> Back
+            </Link>
+            <h1 className="text-2xl font-bold text-slate-900">Dashboard Overview</h1>
+          </div>
           
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -450,6 +469,13 @@ export default function AdminDashboard() {
         onConfirm={executeAction}
         onCancel={closeDialog}
       />
+
+      {editingBusiness && (
+        <EditBusinessModal 
+          business={editingBusiness}
+          onClose={() => setEditingBusiness(null)}
+        />
+      )}
     </div>
   );
 }

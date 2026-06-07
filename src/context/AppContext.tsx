@@ -13,6 +13,7 @@ interface AppContextType {
   filteredBusinesses: Business[];
   featuredBusinesses: Business[];
   updateBusiness: (id: string, updated: Business) => void;
+  addBusiness: (business: Business) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -26,6 +27,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateBusiness = (id: string, updated: Business) => {
     setBusinesses(prev => prev.map(b => b.id === id ? updated : b));
+  };
+
+  const addBusiness = (business: Business) => {
+    setBusinesses(prev => [business, ...prev]);
   };
 
   const filteredBusinesses = useMemo(() => {
@@ -55,7 +60,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setSelectedArea,
       filteredBusinesses,
       featuredBusinesses,
-      updateBusiness
+      updateBusiness,
+      addBusiness
     }}>
       {children}
     </AppContext.Provider>

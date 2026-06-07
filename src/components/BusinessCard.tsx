@@ -2,17 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, MapPin, BadgeCheck, Clock, Navigation } from 'lucide-react';
 import { Business } from '../data/mockData';
+import { checkIsOpen } from '../utils';
 
 interface BusinessCardProps {
   business: Business;
 }
 
 const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
-  // Simple "Open/Closed" mock logic based on current hour vs opening hours string
   const isOpenNow = () => {
-    if (business.opening_hours === '24 Hours') return true;
-    const hour = new Date().getHours();
-    return hour >= 8 && hour < 20; // Rough mock 8am-8pm
+    return checkIsOpen(business.opening_hours);
   };
 
   return (

@@ -51,7 +51,7 @@ export default function ActionMenu({ business, onAction, role = 'admin' }: Actio
               <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Information</div>
             </div>
             <MenuItem icon={<User size={16} />} label="View Profile" onClick={() => handleAction('view')} color="blue" />
-            {!isModerator && (
+            {role === 'superadmin' && (
               <MenuItem icon={<Edit3 size={16} />} label="Edit Business" onClick={() => handleAction('edit')} color="blue" />
             )}
             

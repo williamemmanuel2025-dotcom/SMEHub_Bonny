@@ -3,7 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { Link } from 'react-router-dom';
 import { Business } from '../data/mockData';
-import { MapPin, Navigation } from 'lucide-react';
+import { MapPin, Navigation, Clock } from 'lucide-react';
+import { checkIsOpen } from '../utils';
 
 // Fix for default marker icons in React-Leaflet
 // @ts-ignore
@@ -56,35 +57,53 @@ export default function MapComponent({
         className="h-full w-full"
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {businesses.map((business) => (
+        {businesses.map((business) => {
+          const isOpen = checkIsOpen(business.opening_hours);
+          return (
           <Marker 
             key={business.id} 
             position={[business.latitude, business.longitude]}
           >
             <Popup className="rounded-xl">
               <div className="w-48 p-1">
-                <img 
-                  src={business.cover_image} 
-                  alt={business.business_name} 
-                  className="w-full h-24 object-cover rounded-lg mb-2"
-                />
+                <div className="relative">
+                  <img 
+                    src={business.cover_image} 
+                    alt={business.business_name} 
+                    className="w-full h-24 object-cover rounded-lg mb-2"
+                  />
+                  <div className="absolute top-1 right-1">
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 ${isOpen ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>
+                      {isOpen ? 'OPEN' : 'CLOSED'}
+                    </span>
+                  </div>
+                </div>
                 <h4 className="font-bold text-sm mb-1">{business.business_name}</h4>
                 <p className="text-xs text-slate-500 mb-2 truncate flex items-center gap-1">
                   <MapPin size={10} /> {business.area}
                 </p>
-                <Link 
-                  to={`/business/${business.slug}`}
-                  className="block w-full text-center bg-primary-600 text-white text-xs py-1.5 rounded-md hover:bg-primary-700 transition-colors"
-                >
-                  View Profile
-                </Link>
+                {isOpen ? (
+                  <Link 
+                    to={`/business/${business.slug}`}
+                    className="block w-full text-center bg-primary-600 text-white text-xs py-1.5 rounded-md hover:bg-primary-700 transition-colors"
+                  >
+                    View Profile
+                  </Link>
+                ) : (
+                  <Link 
+                    to={`/business/${business.slug}`}
+                    className="block w-full text-center flex items-center justify-center gap-1 bg-red-500 text-white text-xs font-bold py-1.5 rounded-md hover:bg-red-600 transition-colors"
+                  >
+                    <Clock size={12} /> CLOSED
+                  </Link>
+                )}
               </div>
             </Popup>
           </Marker>
-        ))}
+        )})}
         {businesses.length > 1 && <MapBoundsManager businesses={businesses} />}
       </MapContainer>
     </div>

@@ -19,13 +19,13 @@ export default function Footer() {
               Discover trusted local businesses and SMEs in Bonny Island. Search, explore, and connect seamlessly.
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="text-slate-400 hover:text-white transition-colors">
+              <a href="" className="text-slate-400 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
               <a href="#" className="text-slate-400 hover:text-white transition-colors">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors">
+              <a href="">
                 <Instagram size={20} />
               </a>
             </div>

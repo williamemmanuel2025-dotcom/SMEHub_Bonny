@@ -3,16 +3,42 @@ import { Building2, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
 export default function SubmitBusiness() {
-  const { categories } = useAppContext();
+  const { categories, addBusiness } = useAppContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     
+    const formData = new FormData(e.currentTarget);
+    const newBusiness = {
+      id: `b_${Date.now()}`,
+      business_name: formData.get('business_name') as string,
+      slug: (formData.get('business_name') as string).toLowerCase().replace(/\s+/g, '-'),
+      category: formData.get('category') as string,
+      subcategory: formData.get('subcategory') as string,
+      description: formData.get('description') as string,
+      address: formData.get('address') as string,
+      area: formData.get('area') as string,
+      city: formData.get('city') as string,
+      latitude: 4.4, // default dummy
+      longitude: 7.1, // default dummy
+      phone: formData.get('phone') as string,
+      whatsapp: formData.get('whatsapp') as string,
+      email: formData.get('email') as string,
+      website: formData.get('website') as string,
+      opening_hours: '9:00 AM - 5:00 PM', // default
+      rating: 0,
+      total_reviews: 0,
+      cover_image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800',
+      verified_status: false,
+      featured_status: false
+    };
+    
     // Simulate API submission
     setTimeout(() => {
+      addBusiness(newBusiness);
       setIsSubmitting(false);
       setIsSuccess(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -67,12 +93,12 @@ export default function SubmitBusiness() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Business Name <span className="text-red-500">*</span></label>
-                <input required type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="e.g. ABC Electronics" />
+                <input required name="business_name" type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="e.g. ABC Electronics" />
               </div>
               
                <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Category <span className="text-red-500">*</span></label>
-                <select required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer">
+                <select required name="category" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer">
                   <option value="">Select Category</option>
                   {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                 </select>
@@ -80,12 +106,12 @@ export default function SubmitBusiness() {
 
                <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Subcategory</label>
-                <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="e.g. Gadget Store" />
+                <input type="text" name="subcategory" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="e.g. Gadget Store" />
               </div>
 
                <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Description <span className="text-red-500">*</span></label>
-                <textarea required rows={4} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all resize-none" placeholder="Describe your business, products, and services..."></textarea>
+                <textarea required name="description" rows={4} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all resize-none" placeholder="Describe your business, products, and services..."></textarea>
               </div>
             </div>
           </div>
@@ -99,12 +125,12 @@ export default function SubmitBusiness() {
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Full Address <span className="text-red-500">*</span></label>
-                <input required type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="e.g. 15 Artillery Road" />
+                <input required name="address" type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="e.g. 15 Artillery Road" />
               </div>
 
                <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Area <span className="text-red-500">*</span></label>
-                 <select required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer">
+                 <select required name="area" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all appearance-none cursor-pointer">
                   <option value="">Select Area</option>
                   <option value="Finima">Finima</option>
                   <option value="Akiama">Akiama</option>
@@ -117,27 +143,27 @@ export default function SubmitBusiness() {
 
                <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">City <span className="text-red-500">*</span></label>
-                <input required type="text" defaultValue="Bonny Island" readOnly className="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 outline-none cursor-not-allowed" />
+                <input required name="city" type="text" defaultValue="Bonny Island" readOnly className="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 outline-none cursor-not-allowed" />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number <span className="text-red-500">*</span></label>
-                <input required type="tel" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="0800..." />
+                <input required name="phone" type="tel" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="0800..." />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">WhatsApp Number</label>
-                <input type="tel" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="0800..." />
+                <input type="tel" name="whatsapp" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="0800..." />
               </div>
 
                <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                <input type="email" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="hello@business.com" />
+                <input type="email" name="email" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="hello@business.com" />
               </div>
 
                <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Website</label>
-                <input type="url" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="https://" />
+                <input type="text" name="website" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="www.example.com or https://" />
               </div>
              </div>
           </div>

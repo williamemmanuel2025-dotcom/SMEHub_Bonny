@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { checkIsOpen } from '../utils';
 import { MapPin, Phone, MessageCircle, Mail, Globe, Clock, Star, BadgeCheck, Navigation2, Share2, Heart, ExternalLink } from 'lucide-react';
 import MapComponent from '../components/MapComponent';
 
@@ -22,9 +23,7 @@ export default function BusinessProfile() {
   }
 
   const isOpenNow = () => {
-    if (business.opening_hours === '24 Hours') return true;
-    const hour = new Date().getHours();
-    return hour >= 8 && hour < 20;
+    return checkIsOpen(business.opening_hours);
   };
 
   return (
@@ -137,7 +136,7 @@ export default function BusinessProfile() {
               
               <div className="space-y-4 mb-8">
                 {business.phone && (
-                  <a href={`tel:${business.phone}`} className="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors">
+                  <a target="_top" href={`tel:${business.phone.replace(/[^0-9+]/g, '')}`} className="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors">
                     <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0">
                       <Phone size={18} className="text-slate-600" />
                     </div>
@@ -196,18 +195,29 @@ export default function BusinessProfile() {
               </div>
 
               <div className="flex flex-col gap-3">
-                {business.phone && (
+                {business.phone && isOpenNow() && (
                   <a 
-                    href={`tel:${business.phone}`}
+                    href={`tel:${business.phone.replace(/[^0-9+]/g, '')}`}
+                    target="_top"
                     className="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
                   >
                     <Phone size={18} /> Call Now
                   </a>
                 )}
+
+                {business.phone && !isOpenNow() && (
+                  <button 
+                    disabled
+                    className="w-full py-3.5 bg-red-500 text-white font-semibold rounded-xl shadow-md cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    <Clock size={18} /> Closed
+                  </button>
+                )}
+                
                 {business.whatsapp && (
                   <a 
-                    href={`https://wa.me/${business.whatsapp}`}
-                    target="_blank" rel="noopener noreferrer"
+                    href={`https://wa.me/${business.whatsapp.replace(/[^0-9+]/g, '')}`}
+                    target="_top" rel="noopener noreferrer"
                     className="w-full py-3.5 bg-[#25D366] hover:bg-[#1da851] text-white font-semibold rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
                   >
                     <MessageCircle size={18} /> Chat on WhatsApp
