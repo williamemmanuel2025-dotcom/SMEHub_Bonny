@@ -396,7 +396,7 @@ export const MOCK_BUSINESSES: Business[] = [
     featured_status: false,
   },
   {
-    id: 'b15',
+    id: 'b16',
     business_name: 'Bonny Gym & Fitness Hub',
     slug: 'bonny-gym',
     category: 'Health & Pharmacy',
